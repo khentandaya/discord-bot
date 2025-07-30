@@ -3,7 +3,7 @@ import asyncio
 import discord
 from datetime import datetime, timedelta
 
-DISCORD_BOT_TOKEN = os.environ['DISCORD_BOT_TOKEN']
+DISCORD_BOT_TOKEN = os.environ['DISCORD_TOKEN']
 TARGET_CHANNEL_ID = int(os.environ['TARGET_CHANNEL_ID'])
 TARGET_WEBHOOK_ID = os.environ['TARGET_WEBHOOK_ID']
 DELETE_THRESHOLD_MIN = int(os.getenv('DELETE_THRESHOLD_MIN', 30))
