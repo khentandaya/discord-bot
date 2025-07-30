@@ -1,0 +1,29 @@
+name: Run Discord Bot
+
+on:
+  workflow_dispatch:  # Manual trigger (via GitHub UI or cron-job.org)
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run Discord bot
+        run: |
+          python bot.py
+        env:
+          DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
+          TARGET_USER_ID: ${{ secrets.TARGET_USER_ID }}
+          TARGET_CHANNEL_ID: ${{ secrets.TARGET_CHANNEL_ID }}
