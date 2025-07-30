@@ -1,10 +1,10 @@
 name: Run Discord Bot
 
 on:
-  workflow_dispatch:  # Manual trigger (via GitHub UI or cron-job.org)
+  workflow_dispatch:     # Allows manual run from GitHub
 
 jobs:
-  run-bot:
+  clean-discord:
     runs-on: ubuntu-latest
 
     steps:
@@ -12,18 +12,17 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: 3.11
+          python-version: '3.11'
 
-      - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
+      - name: Install discord.py
+        run: pip install discord.py
 
-      - name: Run Discord bot
-        run: |
-          python bot.py
+      - name: Run deletion script
         env:
-          DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
-          TARGET_USER_ID: ${{ secrets.TARGET_USER_ID }}
+          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
           TARGET_CHANNEL_ID: ${{ secrets.TARGET_CHANNEL_ID }}
+          TARGET_WEBHOOK_ID: ${{ secrets.TARGET_WEBHOOK_ID }}
+          DELETE_THRESHOLD_MIN: ${{ secrets.DELETE_THRESHOLD_MIN }}
+        run: python main.py
