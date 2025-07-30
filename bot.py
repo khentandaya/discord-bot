@@ -1,41 +1,37 @@
 import os
-import discord
 import asyncio
+import discord
 from datetime import datetime, timedelta
 
-TOKEN = os.getenv("DISCORD_TOKEN")
-TARGET_USER_ID = int(os.getenv("TARGET_USER_ID"))
-TARGET_CHANNEL_ID = int(os.getenv("TARGET_CHANNEL_ID"))
+DISCORD_BOT_TOKEN = os.environ['DISCORD_BOT_TOKEN']
+TARGET_CHANNEL_ID = int(os.environ['TARGET_CHANNEL_ID'])
+TARGET_WEBHOOK_ID = os.environ['TARGET_WEBHOOK_ID']
+DELETE_THRESHOLD_MIN = int(os.getenv('DELETE_THRESHOLD_MIN', 30))
 
 intents = discord.Intents.default()
 intents.messages = True
-intents.message_content = True
 client = discord.Client(intents=intents)
 
 @client.event
 async def on_ready():
-    print(f"Logged in as {client.user}")
-    channel = client.get_channel(TARGET_CHANNEL_ID)
+    print(f"✅ Logged in as {client.user}")
 
+    channel = client.get_channel(TARGET_CHANNEL_ID)
     if not channel:
         print("❌ Channel not found.")
         await client.close()
         return
 
-    deleted_count = 0
-    now = datetime.utcnow()
+    delete_before = datetime.utcnow() - timedelta(minutes=DELETE_THRESHOLD_MIN)
     async for message in channel.history(limit=100):
-        if (
-            message.author.id == TARGET_USER_ID and
-            message.created_at < now - timedelta(minutes=30)
-        ):
+        if (str(message.author.id) == TARGET_WEBHOOK_ID and
+                message.created_at < delete_before):
             try:
                 await message.delete()
-                deleted_count += 1
+                print(f"🗑️ Deleted message from {message.author} at {message.created_at}")
             except Exception as e:
-                print(f"Failed to delete message: {e}")
+                print(f"⚠️ Failed to delete message: {e}")
 
-    print(f"✅ Deleted {deleted_count} messages older than 30 minutes.")
     await client.close()
 
-client.run(TOKEN)
+asyncio.run(client.start(DISCORD_BOT_TOKEN))
