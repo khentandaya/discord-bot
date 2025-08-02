@@ -74,7 +74,7 @@ async def on_ready():
 
     # Run background tasks
     bot.loop.create_task(delete_old_messages())
-    bot.loop.create_task(auto_shutdown(minutes=10))  # ⏱ Adjust if needed
+    bot.loop.create_task(auto_shutdown(minutes=55))  # ⏱ Adjust if needed
 
 # === Run Bot ===
 bot.run(TOKEN)
