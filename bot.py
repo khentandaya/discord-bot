@@ -5,36 +5,44 @@ from discord.ext import commands
 from discord import app_commands
 from datetime import datetime, timezone, timedelta
 
+# === Environment Variables ===
 TOKEN = os.environ['DISCORD_TOKEN']
 TARGET_CHANNEL_ID = int(os.environ['TARGET_CHANNEL_ID'])
 TARGET_WEBHOOK_ID = os.environ['TARGET_WEBHOOK_ID']
 DELETE_THRESHOLD_MIN = int(os.getenv('DELETE_THRESHOLD_MIN', 30))
+GUILD_ID = int(os.environ.get('DISCORD_GUILD_ID', 0))  # optional: for faster slash command registration
 
+# === Intents ===
 intents = discord.Intents.default()
-intents.messages = True
+intents.message_content = True  # Needed to read message content (deletion logic)
 intents.guilds = True
 
 bot = commands.Bot(command_prefix="!", intents=intents)
 
 @bot.event
 async def on_ready():
-    print(f"✅ Logged in as {bot.user}")
-
+    print(f"✅ Logged in as {bot.user} (ID: {bot.user.id})")
     try:
-        guild = discord.Object(id=693480796564226169)  # Replace with your server ID
-        synced = await bot.tree.sync(guild=guild)
-        print(f"🔁 Synced {len(synced)} command(s) to guild {guild.id}")
+        if not hasattr(bot, 'synced'):
+            if GUILD_ID:
+                guild = discord.Object(id=693480796564226169)
+                bot.tree.copy_global_to(guild=guild)
+                synced = await bot.tree.sync(guild=guild)
+            else:
+                synced = await bot.tree.sync()
+            print(f"🔁 Synced {len(synced)} slash command(s).")
+            bot.synced = True
     except Exception as e:
         print(f"⚠️ Error syncing commands: {e}")
 
-    # Start deletion logic
     await delete_old_messages()
 
-# ✅ Slash command for Active Developer Badge
+# ✅ Slash Command for Active Developer Badge
 @bot.tree.command(name="musta", description="Ping pong test command.")
 async def musta(interaction: discord.Interaction):
     await interaction.response.send_message("Goods ra ang bot!", ephemeral=True)
 
+# === Deletion Logic ===
 async def delete_old_messages():
     await bot.wait_until_ready()
     channel = bot.get_channel(TARGET_CHANNEL_ID)
