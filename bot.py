@@ -20,9 +20,9 @@ intents.message_content = True
 bot = commands.Bot(command_prefix="!", intents=intents)
 
 # ✅ Slash Command for Badge
-@bot.tree.command(name="musta", description="Ping pong test command.")
-async def musta(interaction: discord.Interaction):
-    await interaction.response.send_message("Goods ra ang bot!", ephemeral=True)
+@bot.tree.command(name="magic", description="i delete ang 30min marinated steam notif")
+async def magic(interaction: discord.Interaction):
+    await interaction.response.send_message("Marinated Messages Cleared", ephemeral=True)
 
 # === Message Deletion Logic ===
 async def delete_old_messages():
