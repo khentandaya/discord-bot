@@ -31,3 +31,4 @@ jobs:
           TARGET_CHANNEL_ID: ${{ secrets.TARGET_CHANNEL_ID }}
           TARGET_WEBHOOK_ID: ${{ secrets.TARGET_WEBHOOK_ID }}
           DELETE_THRESHOLD_MIN: ${{ secrets.DELETE_THRESHOLD_MIN }}
+          DISCORD_GUILD_ID: ${{ secrets.DISCORD_GUILD_ID }}  # ✅ Add this
