@@ -29,9 +29,9 @@ async def on_ready():
     await delete_old_messages()
 
 # ✅ Slash command for Active Developer Badge
-@bot.tree.command(name="ping", description="Ping pong test command.")
-async def ping(interaction: discord.Interaction):
-    await interaction.response.send_message("🏓 Pong!", ephemeral=True)
+@bot.tree.command(name="musta", description="Ping pong test command.")
+async def musta(interaction: discord.Interaction):
+    await interaction.response.send_message("Goods ra ang bot!", ephemeral=True)
 
 async def delete_old_messages():
     await bot.wait_until_ready()
